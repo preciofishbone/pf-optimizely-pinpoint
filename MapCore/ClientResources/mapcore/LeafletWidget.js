@@ -36,6 +36,12 @@ define([
             };
         },
 
+        //As a workaround, but also good practice for implementing widgets the code should have empty callback method for the widget:
+        onChange: function (value) 
+        {
+            // Event
+        },
+
         _setValueAttr: function (value) { //Gets called on pageLoad and when this.set is called (On pageLoad the value is received from the CMS).
             if (value.latitude && value.latitude) {
                 //Update the map & marker with the parsed coordinates 
@@ -220,7 +226,7 @@ define([
                 .then(data => {
                     if (data != null) {
                         this.resultDropdown.classList.add("hidden"); //Remove dropdown
-                        this.set("value", { latitude: data.latitude, longitude: data.longitude });
+                        this.set("value", Object.assign({}, this.get("value"), { latitude: data.latitude, longitude: data.longitude })); //Copy over the object source and update the target only with what's neccesary, required in CMS 13 but works for CMS 12 too.
                     } 
                 }, (error) => {
                     console.error("Error with api-call: ", error);
@@ -231,7 +237,7 @@ define([
             //Hide the dropdown, populate searchBox with address & update CMS with coordinates. 
             this.resultDropdown.classList.add("hidden");
             this.searchbox.value = this._removePrefix(data.address);
-            this.set("value", { latitude: data.latitude, longitude: data.longitude });
+            this.set("value", Object.assign({}, this.get("value"), { latitude: data.latitude, longitude: data.longitude }));
         },
 
         _appendPrefix: function (address) {
@@ -269,7 +275,7 @@ define([
 
         _onMapClick: function (event) {
             //Calls _setValueAttr & updates values in the CMS editor
-            this.set("value", { latitude: event.latlng.lat, longitude: event.latlng.lng });
+            this.set("value", Object.assign({}, this.get("value"), { latitude: event.latlng.lat, longitude: event.latlng.lng }));
         },
 
         _updateMap: function (value) {
@@ -286,7 +292,7 @@ define([
             this.marker.remove(); //Remove the marker
 
             //Update value in the CMS editor
-            this.set("value", { latitude: null, longitude: null }); //Set values to null (still an object for local block properties)
+            this.set("value", Object.assign({}, this.get("value"), { latitude: null, longitude: null })); //Set values to null (still an object for local block properties)
         },
 
         _initMap: function () {
