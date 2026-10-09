@@ -43,7 +43,8 @@ define([
         },
 
         _setValueAttr: function (value) { //Gets called on pageLoad and when this.set is called (On pageLoad the value is received from the CMS).
-            if (value.latitude && value.latitude) {
+            //Dijit applies constructor params before postCreate, so the map doesn't exist yet when the value is passed in, needed for compare view.
+            if (value && value.latitude && value.longitude && this.map && this.marker) {
                 //Update the map & marker with the parsed coordinates 
                 this._updateMap(value);
             }
@@ -324,6 +325,12 @@ define([
                 setTimeout(() => {
                     this.map.invalidateSize(); //Arrow function retains "this" context
                 }, 500);
+
+                //Apply a value that was set before the map was created
+                const initialValue = this.get("value");
+                if (initialValue && initialValue.latitude && initialValue.longitude) {
+                    this._updateMap(initialValue);
+                }
             }
         },
     });
