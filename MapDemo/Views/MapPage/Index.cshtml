@@ -1,7 +1,5 @@
-﻿@page
-@using EPiServer.Web.Mvc.Html;
-@using MapDemo;
-@model MapPageTypeModel
+﻿@using MapDemo.Models.Pages
+@model MapPage
 
 <!DOCTYPE html>
 <html>
@@ -12,7 +10,9 @@
 </head>
 <body>
     <main class="container">
-        <h1>Select the edit view in the top right!</h1>
+        <h1>@Model.Name</h1>
+        <p>Latitude: @Model.Map?.Latitude</p>
+        <p>Longitude: @Model.Map?.Longitude</p>
     </main>
 </body>
 </html>
